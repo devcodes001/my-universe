@@ -1,0 +1,17 @@
+{
+    "name": "Our Universe",
+    "short_name": "Universe",
+    "description": "A private space for our love story.",
+    "start_url": "/dashboard",
+    "display": "standalone",
+    "background_color": "#060614",
+    "theme_color": "#8b5cf6",
+    "icons": [
+        {
+            "src": "/icon.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any maskable"
+        }
+    ]
+}
