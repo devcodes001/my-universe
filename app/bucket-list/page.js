@@ -69,7 +69,7 @@ export default function BucketListPage() {
     const completedCount = items.filter(i => i.isCompleted).length;
 
     return (
-        <div className="relative min-h-screen bg-[#060614] pt-32 pb-28 md:pb-12 px-4">
+        <div className="relative min-h-screen bg-[#060614] pt-24 md:pt-32 pb-40 md:pb-12 px-4">
             <StarField />
 
             <div className="relative z-10 max-w-3xl mx-auto">

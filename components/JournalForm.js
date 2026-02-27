@@ -39,7 +39,7 @@ export default function JournalForm({ onAdd }) {
         <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            className="p-10 rounded-[3rem] glass-morphism border-white/10 relative overflow-hidden"
+            className="p-6 md:p-10 rounded-[2.5rem] md:rounded-[3rem] glass-morphism border-white/10 relative overflow-hidden"
         >
             <div className="absolute top-0 right-0 w-64 h-64 bg-purple-500/5 blur-[100px]" />
 
@@ -54,7 +54,7 @@ export default function JournalForm({ onAdd }) {
                         value={content}
                         onChange={(e) => setContent(e.target.value)}
                         placeholder="WHAT'S ON YOUR CELESTIAL RADIUS?"
-                        className="w-full bg-white/5 border border-white/5 rounded-[2.5rem] p-8 text-white placeholder:text-white/20 focus:outline-none focus:border-purple-500/50 transition-all min-h-[220px] resize-none font-medium text-base md:text-lg"
+                        className="w-full bg-white/5 border border-white/5 rounded-[2rem] p-5 md:p-8 text-white placeholder:text-white/20 focus:outline-none focus:border-purple-500/50 transition-all min-h-[140px] md:min-h-[180px] resize-none font-medium text-sm md:text-base"
                         required
                     />
                 </div>
@@ -68,12 +68,12 @@ export default function JournalForm({ onAdd }) {
                                     key={m}
                                     type="button"
                                     onClick={() => setMood(m)}
-                                    className={`w-16 h-16 flex-shrink-0 flex items-center justify-center rounded-3xl transition-all duration-500 ${mood === m
+                                    className={`w-12 h-12 md:w-16 md:h-16 flex-shrink-0 flex items-center justify-center rounded-2xl md:rounded-3xl transition-all duration-500 ${mood === m
                                         ? "bg-white text-black scale-105 shadow-2xl"
                                         : "glass bg-white/5 text-white/30 hover:bg-white/10 hover:text-white"
                                         }`}
                                 >
-                                    <span className="text-3xl">{m}</span>
+                                    <span className="text-2xl md:text-3xl">{m}</span>
                                 </button>
                             ))}
                         </div>

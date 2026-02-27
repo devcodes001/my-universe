@@ -26,7 +26,7 @@ export default function RootLayout({ children }) {
       >
         <AuthProvider>
           <Navbar />
-          <main>{children}</main>
+          <main style={{ position: 'relative', zIndex: 1, touchAction: 'pan-y' }}>{children}</main>
         </AuthProvider>
       </body>
     </html>

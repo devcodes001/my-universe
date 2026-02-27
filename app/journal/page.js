@@ -59,7 +59,7 @@ export default function JournalPage() {
     }
 
     return (
-        <div className="relative min-h-screen bg-[#060614] pt-32 pb-28 md:pb-12 overflow-x-hidden">
+        <div className="relative min-h-screen bg-[#060614] pt-24 md:pt-32 pb-40 md:pb-12 overflow-x-hidden">
             <StarField />
 
             <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6">

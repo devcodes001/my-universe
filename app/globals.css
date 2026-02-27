@@ -20,11 +20,19 @@
   --secondary-glow: #22c55e;
 }
 
+html,
+body {
+  height: 100%;
+  -webkit-overflow-scrolling: touch;
+}
+
 body {
   font-family: 'Outfit', sans-serif;
   background-color: var(--bg-dark);
   color: white;
-  overflow-x: hidden;
+  overflow-x: clip;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 /* Glassmorphism Utilities */
