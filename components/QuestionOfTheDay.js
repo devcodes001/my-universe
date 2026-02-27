@@ -137,7 +137,7 @@ export default function QuestionOfTheDay() {
                             whileTap={{ scale: 0.98 }}
                             type="submit"
                             disabled={submitting || !answer.trim()}
-                            className="w-full py-3.5 rounded-full bg-white text-black text-[10px] font-black uppercase tracking-[0.2em] shadow-lg disabled:opacity-30 transition-all"
+                            className="w-full py-3.5 rounded-full bg-white text-black text-[10px] font-black uppercase tracking-[0.2em] shadow-lg disabled:opacity-30 transition-all mb-4"
                         >
                             {submitting ? "Submitting..." : "Lock In Answer 🔒"}
                         </motion.button>

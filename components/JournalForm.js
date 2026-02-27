@@ -101,7 +101,7 @@ export default function JournalForm({ onAdd }) {
                         whileTap={{ scale: 0.98 }}
                         type="submit"
                         disabled={isSubmitting}
-                        className="w-full lg:w-auto px-12 py-5 rounded-full bg-white text-black text-xs font-black uppercase tracking-[0.3em] shadow-xl shadow-white/5 disabled:opacity-50 transition-all mt-4 lg:mt-0"
+                        className="w-full lg:w-auto px-12 py-5 rounded-full bg-white text-black text-xs font-black uppercase tracking-[0.3em] shadow-xl shadow-white/5 disabled:opacity-50 transition-all mt-4 lg:mt-0 mb-8 lg:mb-0"
                     >
                         {isSubmitting ? "TRANSMITTING..." : "ARCHIVE MOMENT"}
                     </motion.button>

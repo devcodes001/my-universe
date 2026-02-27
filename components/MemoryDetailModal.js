@@ -25,7 +25,7 @@ export default function MemoryDetailModal({ memory, onClose }) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[120] flex items-center justify-center p-4 sm:p-6 bg-[#060614]/90 backdrop-blur-2xl"
+            className="fixed inset-0 z-[300] flex items-center justify-center p-4 sm:p-6 bg-[#060614]/90 backdrop-blur-2xl"
             onClick={onClose}
         >
             <motion.div
