@@ -79,7 +79,7 @@ export default function AddMemoryForm({ onAdd, onClose }) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[300] flex items-center justify-center bg-black/70 backdrop-blur-md p-4"
+            className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/80 backdrop-blur-xl"
             onClick={onClose}
         >
             <motion.div
@@ -88,7 +88,7 @@ export default function AddMemoryForm({ onAdd, onClose }) {
                 exit={{ scale: 0.9, opacity: 0, y: 20 }}
                 transition={{ type: "spring", stiffness: 300, damping: 25 }}
                 onClick={(e) => e.stopPropagation()}
-                className="w-full max-w-lg bg-[#12122a] border border-white/10 rounded-2xl p-6 shadow-2xl max-h-[90vh] overflow-y-auto"
+                className="w-full max-w-xl bg-[#060614] border border-white/10 rounded-[2.5rem] md:rounded-[3rem] p-6 md:p-10 shadow-2xl relative overflow-hidden max-h-[85vh] overflow-y-auto pb-24"
             >
                 <h2 className="text-xl font-bold text-white mb-5 flex items-center gap-2">
                     <span className="text-2xl">✨</span> New Memory

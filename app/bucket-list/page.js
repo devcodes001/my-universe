@@ -184,12 +184,12 @@ export default function BucketListPage() {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className="fixed inset-0 z-[300] flex items-center justify-center p-4 bg-[#060614]/95 backdrop-blur-2xl"
+                        className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-[#060614]/98 backdrop-blur-2xl"
                     >
                         <motion.div
                             initial={{ scale: 0.9, y: 20 }}
                             animate={{ scale: 1, y: 0 }}
-                            className="w-full max-w-xl glass-morphism border-white/10 rounded-[4rem] p-12 shadow-2xl relative overflow-hidden"
+                            className="w-full max-w-xl glass-morphism border-white/10 rounded-[4rem] p-12 shadow-2xl relative overflow-hidden pb-24"
                         >
                             <div className="absolute top-0 right-0 w-64 h-64 bg-cyan-500/5 blur-[100px]" />
 
