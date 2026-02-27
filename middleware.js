@@ -14,7 +14,6 @@ export const config = {
         "/letters/:path*",
         "/journal/:path*",
         "/bucket-list/:path*",
-        "/date-night/:path*",
         "/our-story/:path*",
     ],
 };

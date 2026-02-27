@@ -198,7 +198,6 @@ export default function DashboardPage() {
                             { href: "/memories", icon: "💫", label: "Timeline" },
                             { href: "/journal", icon: "📓", label: "Moods" },
                             { href: "/letters", icon: "💌", label: "Archive" },
-                            { href: "/date-night", icon: "🎲", label: "Date" },
                             { href: "/our-story", icon: "📊", label: "Stats" },
                         ].map((action, i) => (
                             <Link key={i} href={action.href} className="md:col-span-1 md:row-span-1">

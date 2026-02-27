@@ -27,7 +27,6 @@ export default function Navbar() {
         { href: "/journal", label: "Moods", icon: "📓" },
         { href: "/bucket-list", label: "Bucket List", icon: "✈️" },
         { href: "/letters", label: "Archive", icon: "💌" },
-        { href: "/date-night", label: "Date Night", icon: "🎲" },
         { href: "/our-story", label: "Our Story", icon: "📊" },
     ];
 

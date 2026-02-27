@@ -167,15 +167,15 @@ export default function LoveStreakWidget() {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className="fixed inset-0 z-[200] flex items-end md:items-center justify-center p-0 md:p-6 bg-black/90 backdrop-blur-xl"
+                        className="fixed inset-0 z-[300] flex items-center justify-center p-4 md:p-6 bg-black/90 backdrop-blur-xl"
                         onClick={() => setIsEditing(false)}
                     >
                         <motion.div
-                            initial={{ y: 40, scale: 0.95 }}
-                            animate={{ y: 0, scale: 1 }}
-                            exit={{ y: 40, scale: 0.95 }}
+                            initial={{ y: 20, scale: 0.95, opacity: 0 }}
+                            animate={{ y: 0, scale: 1, opacity: 1 }}
+                            exit={{ y: 20, scale: 0.95, opacity: 0 }}
                             onClick={(e) => e.stopPropagation()}
-                            className="w-full max-w-sm bg-[#0a0a1a] border border-white/10 rounded-t-[2.5rem] md:rounded-[2.5rem] p-8 shadow-2xl relative overflow-hidden"
+                            className="w-full max-w-sm bg-[#0a0a25] border border-white/10 rounded-[2.5rem] p-8 shadow-2xl relative overflow-hidden"
                         >
                             <div className="absolute top-0 right-0 w-32 h-32 bg-pink-500/10 blur-[60px]" />
 
@@ -190,7 +190,7 @@ export default function LoveStreakWidget() {
                                     </p>
                                 </div>
 
-                                <form onSubmit={handleSaveDate} className="space-y-5">
+                                <form onSubmit={handleSaveDate} className="space-y-6">
                                     <div className="space-y-2">
                                         <label className="text-[10px] text-white/30 uppercase tracking-[0.3em] font-black ml-2">
                                             The Date It All Started
@@ -198,7 +198,6 @@ export default function LoveStreakWidget() {
                                         <input
                                             type="date"
                                             required
-                                            autoFocus
                                             value={editDate}
                                             max={new Date().toISOString().split("T")[0]}
                                             onChange={(e) => {
@@ -206,7 +205,7 @@ export default function LoveStreakWidget() {
                                                 if (val.length > 10) return;
                                                 setEditDate(val);
                                             }}
-                                            className="w-full bg-white/5 border border-white/5 rounded-2xl p-4 text-white focus:outline-none focus:border-pink-500/50 font-black text-sm"
+                                            className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white focus:outline-none focus:border-pink-500/50 font-black text-sm text-center"
                                         />
                                     </div>
 
@@ -220,7 +219,7 @@ export default function LoveStreakWidget() {
                                         </button>
                                         <button
                                             type="submit"
-                                            className="py-4 rounded-full bg-white text-black font-black text-[10px] uppercase tracking-widest shadow-xl shadow-white/5 hover:scale-105 transition-all"
+                                            className="py-4 rounded-full bg-white text-black font-black text-[10px] uppercase tracking-widest shadow-xl shadow-white/5 hover:scale-105 active:scale-95 transition-all"
                                         >
                                             Save 💕
                                         </button>
