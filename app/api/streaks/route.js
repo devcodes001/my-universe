@@ -17,10 +17,13 @@ export const GET = withAuth(async (req, { user, session }) => {
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
     // ─── Days Together ──────────────────────────────────
-    const createdAt = new Date(session.user.createdAt || now);
+    // Use togetherSince if set, otherwise fall back to account creation date
+    const togetherDate = session.user.togetherSince
+        ? new Date(session.user.togetherSince)
+        : new Date(session.user.createdAt || now);
     const daysTogether = Math.max(
         1,
-        Math.floor((now - createdAt) / (1000 * 60 * 60 * 24))
+        Math.floor((now - togetherDate) / (1000 * 60 * 60 * 24))
     );
 
     // ─── Days Since Last Fight ──────────────────────────

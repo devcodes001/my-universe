@@ -42,6 +42,9 @@ const UserSchema = new mongoose.Schema(
             type: String,
             default: "Our Special Day",
         },
+        togetherSince: {
+            type: Date,
+        },
     },
     { timestamps: true }
 );

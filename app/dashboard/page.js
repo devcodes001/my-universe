@@ -91,8 +91,9 @@ export default function DashboardPage() {
 
     if (!session) return null;
 
+    const togetherDate = session.user?.togetherSince || session.user?.createdAt || Date.now();
     const daysTogether = Math.floor(
-        (new Date() - new Date(session.user?.createdAt || Date.now())) /
+        (new Date() - new Date(togetherDate)) /
         (1000 * 60 * 60 * 24)
     ) || 1;
 
