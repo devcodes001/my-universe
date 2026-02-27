@@ -1,28 +1,26 @@
 import { NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "../../../../lib/authOptions";
-import dbConnect from "@/lib/db";
+import { withAuth } from "@/lib/withAuth";
+import { validateBody } from "@/lib/validate";
 import User from "@/models/User";
 
-export async function PATCH(request) {
-    try {
-        const session = await getServerSession(authOptions);
-        if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+// PATCH — update user profile (anniversary, milestone name)
+export const PATCH = withAuth(async (req, { user }) => {
+    const body = await req.json();
 
-        await dbConnect();
-        const { anniversaryDate, milestoneName } = await request.json();
+    const validated = validateBody(body, {
+        anniversaryDate: { type: "date" },
+        milestoneName: { maxLength: 100 },
+    });
 
-        const user = await User.findByIdAndUpdate(
-            session.user.id,
-            {
-                anniversaryDate: anniversaryDate ? new Date(anniversaryDate) : undefined,
-                milestoneName
-            },
-            { new: true }
-        );
+    const updateData = {};
+    if (validated.anniversaryDate) updateData.anniversaryDate = validated.anniversaryDate;
+    if (validated.milestoneName) updateData.milestoneName = validated.milestoneName;
 
-        return NextResponse.json({ user });
-    } catch (error) {
-        return NextResponse.json({ error: "Failed to update profile" }, { status: 500 });
-    }
-}
+    const updatedUser = await User.findByIdAndUpdate(
+        user.id,
+        updateData,
+        { new: true }
+    );
+
+    return NextResponse.json({ user: updatedUser });
+});

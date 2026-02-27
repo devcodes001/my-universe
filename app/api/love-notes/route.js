@@ -1,39 +1,31 @@
 import { NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "../../../lib/authOptions";
-import dbConnect from "@/lib/db";
+import { withAuth } from "@/lib/withAuth";
+import { validateBody } from "@/lib/validate";
 import LoveNote from "@/models/LoveNote";
 
-export async function GET() {
-    try {
-        const session = await getServerSession(authOptions);
-        if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+// GET — fetch all love notes for the couple
+export const GET = withAuth(async (req, { user }) => {
+    const notes = await LoveNote.find({ coupleId: user.coupleId })
+        .sort({ createdAt: -1 })
+        .lean();
 
-        await dbConnect();
-        const notes = await LoveNote.find({ coupleId: session.user.coupleId }).sort({ createdAt: -1 });
-        return NextResponse.json({ notes });
-    } catch (error) {
-        return NextResponse.json({ error: "Failed to fetch love notes" }, { status: 500 });
-    }
-}
+    return NextResponse.json({ notes });
+});
 
-export async function POST(request) {
-    try {
-        const session = await getServerSession(authOptions);
-        if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+// POST — add a love note to the jar
+export const POST = withAuth(async (req, { user }) => {
+    const body = await req.json();
 
-        await dbConnect();
-        const { content } = await request.json();
+    const validated = validateBody(body, {
+        content: { required: true, maxLength: 500 },
+    });
 
-        const note = await LoveNote.create({
-            content,
-            userId: session.user.id,
-            authorName: session.user.name,
-            coupleId: session.user.coupleId,
-        });
+    const note = await LoveNote.create({
+        content: validated.content,
+        userId: user.id,
+        authorName: user.name,
+        coupleId: user.coupleId,
+    });
 
-        return NextResponse.json({ note }, { status: 201 });
-    } catch (error) {
-        return NextResponse.json({ error: "Failed to save love note" }, { status: 500 });
-    }
-}
+    return NextResponse.json({ note }, { status: 201 });
+});

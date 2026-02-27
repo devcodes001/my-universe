@@ -9,12 +9,17 @@ import StarField from "@/components/StarField";
 import AnniversaryBanner from "@/components/AnniversaryBanner";
 import CountdownWidget from "@/components/CountdownWidget";
 import LoveJar from "@/components/LoveJar";
+import OnThisDayWidget from "@/components/OnThisDayWidget";
+import DailyPromptWidget from "@/components/DailyPromptWidget";
+import LoveStreakWidget from "@/components/LoveStreakWidget";
 
 export default function DashboardPage() {
     const { data: session, status } = useSession();
     const router = useRouter();
     const [stats, setStats] = useState({ memories: 0, letters: 0 });
     const [recentMemories, setRecentMemories] = useState([]);
+    const [insights, setInsights] = useState(null);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         if (status === "unauthenticated") {
@@ -24,90 +29,72 @@ export default function DashboardPage() {
 
     useEffect(() => {
         if (status === "authenticated") {
-            fetchStats();
+            fetchData();
         }
     }, [status]);
 
-    const fetchStats = async () => {
+    const fetchData = async () => {
         try {
-            const [memRes, letRes] = await Promise.all([
+            const [memRes, letRes, insightRes] = await Promise.all([
                 fetch("/api/memories"),
                 fetch("/api/letters"),
+                fetch("/api/insights"),
             ]);
 
-            if (!memRes.ok || !letRes.ok) {
-                console.error("Fetch failed with status:", memRes.status, letRes.status);
-                return;
+            if (memRes.ok) {
+                const memData = await memRes.json();
+                setRecentMemories((memData.memories || []).slice(0, 3));
+                setStats((prev) => ({ ...prev, memories: memData.memories?.length || 0 }));
             }
 
-            const memData = await memRes.json();
-            const letData = await letRes.json();
+            if (letRes.ok) {
+                const letData = await letRes.json();
+                const letters = letData.letters || [];
+                const now = new Date();
+                const upcoming = letters.find((l) => {
+                    const openDate = new Date(l.openDate);
+                    const diffDays = Math.ceil((openDate - now) / (1000 * 60 * 60 * 24));
+                    return diffDays > 0 && diffDays <= 7;
+                });
+                setStats((prev) => ({
+                    ...prev,
+                    letters: letters.length,
+                    upcoming,
+                }));
+            }
 
-            const letters = letData.letters || [];
-            const now = new Date();
-            const upcoming = Array.isArray(letters) ? letters.find(l => {
-                const openDate = new Date(l.openDate);
-                const diffDays = Math.ceil((openDate - now) / (1000 * 60 * 60 * 24));
-                return diffDays > 0 && diffDays <= 7;
-            }) : null;
-
-            setStats({
-                memories: memData.memories?.length || 0,
-                letters: letters.length || 0,
-                upcoming: upcoming
-            });
-            setRecentMemories((memData.memories || []).slice(0, 3));
+            if (insightRes.ok) {
+                const insightData = await insightRes.json();
+                setInsights(insightData);
+            }
         } catch (err) {
-            console.error("Failed to fetch stats:", err);
+            console.error("Failed to fetch dashboard data:", err);
+        } finally {
+            setLoading(false);
         }
     };
 
-    if (status === "loading") {
+    if (status === "loading" || loading) {
         return (
-            <div className="min-h-screen bg-[#060614] flex items-center justify-center">
+            <div className="min-h-screen bg-[#060614] flex flex-col items-center justify-center gap-4">
                 <motion.div
                     animate={{ rotate: 360 }}
                     transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
                     className="w-8 h-8 border-2 border-purple-500 border-t-transparent rounded-full"
                 />
+                <p className="text-[10px] text-white/20 uppercase tracking-[0.4em] font-bold">
+                    Loading your universe...
+                </p>
             </div>
         );
     }
 
     if (!session) return null;
 
-    // Calculate days together (from account creation for demo)
     const daysTogether = Math.floor(
         (new Date() - new Date(session.user?.createdAt || Date.now())) /
         (1000 * 60 * 60 * 24)
     ) || 1;
-
-    const quickActions = [
-        {
-            href: "/memories",
-            icon: "💫",
-            label: "Add Memory",
-            desc: "Capture a moment",
-            gradient: "from-purple-500/20 to-indigo-500/20",
-            border: "border-purple-500/20",
-        },
-        {
-            href: "/journal",
-            icon: "📓",
-            label: "Daily Journal",
-            desc: "How was your day?",
-            gradient: "from-blue-500/20 to-cyan-500/20",
-            border: "border-blue-500/20",
-        },
-        {
-            href: "/letters",
-            icon: "💌",
-            label: "Write Letter",
-            desc: "To your future selves",
-            gradient: "from-pink-500/20 to-rose-500/20",
-            border: "border-pink-500/20",
-        },
-    ];
 
     return (
         <div className="relative min-h-screen bg-[#060614] pt-24 md:pt-28 pb-40 md:pb-12 px-4 sm:px-6">
@@ -182,7 +169,7 @@ export default function DashboardPage() {
                         </div>
                     </motion.div>
 
-                    {/* Upcoming Letter Notification - New Section */}
+                    {/* Upcoming Letter Notification */}
                     {stats.upcoming && (
                         <motion.div
                             initial={{ opacity: 0, scale: 0.9 }}
@@ -194,7 +181,7 @@ export default function DashboardPage() {
                                 <div className="text-4xl animate-bounce">💌</div>
                                 <div>
                                     <h3 className="text-[10px] font-black text-pink-400 uppercase tracking-[0.4em]">OPENING SOON</h3>
-                                    <p className="text-lg font-bold text-white tracking-tight mt-1">"{stats.upcoming.title}"</p>
+                                    <p className="text-lg font-bold text-white tracking-tight mt-1">&quot;{stats.upcoming.title}&quot;</p>
                                 </div>
                             </div>
                             <Link href="/letters" className="relative z-10 px-8 py-3 bg-white text-black rounded-full text-[10px] font-black uppercase tracking-[0.2em] shadow-xl shadow-pink-500/10 hover:scale-105 transition-all">
@@ -203,7 +190,7 @@ export default function DashboardPage() {
                         </motion.div>
                     )}
 
-                    {/* Quick Access - Single Action Grid */}
+                    {/* Quick Access */}
                     <div className="md:col-span-3 grid grid-cols-3 md:grid-cols-1 md:grid-rows-1 gap-6">
                         {[
                             { href: "/memories", icon: "💫", label: "Timeline" },
@@ -225,7 +212,7 @@ export default function DashboardPage() {
                         ))}
                     </div>
 
-                    {/* Recent Memories & Bucket Preview - Wide Large */}
+                    {/* Recent Memories */}
                     <motion.div
                         initial={{ opacity: 0, y: 30 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -251,7 +238,7 @@ export default function DashboardPage() {
                             </div>
                         ) : (
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-                                {recentMemories.slice(0, 2).map((mem, i) => (
+                                {recentMemories.slice(0, 2).map((mem) => (
                                     <motion.div
                                         key={mem._id}
                                         whileHover={{ y: -5 }}
@@ -282,11 +269,30 @@ export default function DashboardPage() {
                             </div>
                         )}
 
-
-                        {/* Decoration */}
                         <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-purple-500/5 blur-3xl rounded-full" />
                     </motion.div>
                 </div>
+
+                {/* Love Streaks */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <LoveStreakWidget />
+                    {insights?.dailyPrompt && (
+                        <DailyPromptWidget
+                            prompt={insights.dailyPrompt}
+                            onUsePrompt={() => router.push("/journal")}
+                        />
+                    )}
+                </div>
+
+                {/* Insights Row — On This Day */}
+                {insights?.onThisDay?.hasContent && (
+                    <div className="mb-12">
+                        <OnThisDayWidget
+                            memories={insights.onThisDay.memories}
+                            journals={insights.onThisDay.journals}
+                        />
+                    </div>
+                )}
             </div>
         </div>
     );

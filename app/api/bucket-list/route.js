@@ -1,61 +1,55 @@
 import { NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "../../../lib/authOptions";
-import dbConnect from "@/lib/db";
+import { withAuth } from "@/lib/withAuth";
+import { validateBody } from "@/lib/validate";
 import BucketItem from "@/models/BucketItem";
 
-export async function GET() {
-    try {
-        const session = await getServerSession(authOptions);
-        if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+// GET — fetch all bucket list items for the couple
+export const GET = withAuth(async (req, { user }) => {
+    const items = await BucketItem.find({ coupleId: user.coupleId })
+        .sort({ isCompleted: 1, createdAt: -1 })
+        .lean();
 
-        await dbConnect();
-        const items = await BucketItem.find({ coupleId: session.user.coupleId }).sort({ isCompleted: 1, createdAt: -1 });
-        return NextResponse.json({ items });
-    } catch (error) {
-        return NextResponse.json({ error: "Failed to fetch bucket list" }, { status: 500 });
+    return NextResponse.json({ items });
+});
+
+// POST — add a new bucket list item
+export const POST = withAuth(async (req, { user }) => {
+    const body = await req.json();
+
+    const validated = validateBody(body, {
+        title: { required: true, maxLength: 200 },
+        description: { maxLength: 1000 },
+    });
+
+    const item = await BucketItem.create({
+        ...validated,
+        coupleId: user.coupleId,
+    });
+
+    return NextResponse.json({ item }, { status: 201 });
+});
+
+// PATCH — toggle completion of a bucket list item
+export const PATCH = withAuth(async (req, { user }) => {
+    const body = await req.json();
+
+    const validated = validateBody(body, {
+        id: { required: true, maxLength: 30 },
+        isCompleted: { type: "boolean" },
+    });
+
+    const item = await BucketItem.findOneAndUpdate(
+        { _id: validated.id, coupleId: user.coupleId },
+        {
+            isCompleted: validated.isCompleted,
+            completedDate: validated.isCompleted ? new Date() : null,
+        },
+        { new: true }
+    );
+
+    if (!item) {
+        return NextResponse.json({ error: "Item not found" }, { status: 404 });
     }
-}
 
-export async function POST(request) {
-    try {
-        const session = await getServerSession(authOptions);
-        if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-
-        await dbConnect();
-        const body = await request.json();
-
-        const item = await BucketItem.create({
-            ...body,
-            coupleId: session.user.coupleId,
-        });
-
-        return NextResponse.json({ item }, { status: 201 });
-    } catch (error) {
-        return NextResponse.json({ error: "Failed to save bucket item" }, { status: 500 });
-    }
-}
-
-export async function PATCH(request) {
-    try {
-        const session = await getServerSession(authOptions);
-        if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-
-        await dbConnect();
-        const { id, isCompleted, memoryId } = await request.json();
-
-        const item = await BucketItem.findOneAndUpdate(
-            { _id: id, coupleId: session.user.coupleId },
-            {
-                isCompleted,
-                memoryId,
-                completedDate: isCompleted ? new Date() : null
-            },
-            { new: true }
-        );
-
-        return NextResponse.json({ item });
-    } catch (error) {
-        return NextResponse.json({ error: "Failed to update bucket item" }, { status: 500 });
-    }
-}
+    return NextResponse.json({ item });
+});

@@ -2,13 +2,26 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { useToast } from "./ToastProvider";
 
 export default function JournalForm({ onAdd }) {
+    const toast = useToast();
     const [content, setContent] = useState("");
     const [mood, setMood] = useState("😊");
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const moods = ["✨", "❤️", "😊", "🥰", "🌟", "🎉", "🥺", "💫", "🍃", "☁️"];
+    const moods = [
+        { emoji: "✨", label: "Inspired" },
+        { emoji: "❤️", label: "Loved" },
+        { emoji: "😊", label: "Happy" },
+        { emoji: "🥰", label: "Adoring" },
+        { emoji: "🌟", label: "Grateful" },
+        { emoji: "🎉", label: "Excited" },
+        { emoji: "🥺", label: "Vulnerable" },
+        { emoji: "💫", label: "Dreamy" },
+        { emoji: "🍃", label: "Peaceful" },
+        { emoji: "☁️", label: "Cloudy" },
+    ];
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -27,9 +40,13 @@ export default function JournalForm({ onAdd }) {
                 onAdd(data.journal);
                 setContent("");
                 setMood("😊");
+                toast.success("Journal entry saved ✨");
+            } else {
+                toast.error("Failed to save entry");
             }
         } catch (err) {
             console.error("Failed to save journal:", err);
+            toast.error("Something went wrong");
         } finally {
             setIsSubmitting(false);
         }
@@ -62,18 +79,18 @@ export default function JournalForm({ onAdd }) {
                 <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-10">
                     <div className="w-full lg:w-auto overflow-hidden">
                         <p className="text-[11px] text-white/20 uppercase tracking-[0.4em] font-black mb-6 ml-4">Current frequency</p>
-                        <div className="flex gap-4 overflow-x-auto no-scrollbar pb-4 -mx-2 px-2">
+                        <div className="flex gap-3 overflow-x-auto no-scrollbar pb-4 -mx-2 px-2">
                             {moods.map((m) => (
                                 <button
-                                    key={m}
+                                    key={m.emoji}
                                     type="button"
-                                    onClick={() => setMood(m)}
-                                    className={`w-12 h-12 md:w-16 md:h-16 flex-shrink-0 flex items-center justify-center rounded-2xl md:rounded-3xl transition-all duration-500 ${mood === m
+                                    onClick={() => setMood(m.emoji)}
+                                    className={`w-12 h-12 md:w-14 md:h-14 flex-shrink-0 flex flex-col items-center justify-center rounded-2xl md:rounded-3xl transition-all duration-500 ${mood === m.emoji
                                         ? "bg-white text-black scale-105 shadow-2xl"
                                         : "glass bg-white/5 text-white/30 hover:bg-white/10 hover:text-white"
                                         }`}
                                 >
-                                    <span className="text-2xl md:text-3xl">{m}</span>
+                                    <span className="text-xl md:text-2xl">{m.emoji}</span>
                                 </button>
                             ))}
                         </div>
@@ -84,13 +101,12 @@ export default function JournalForm({ onAdd }) {
                         whileTap={{ scale: 0.98 }}
                         type="submit"
                         disabled={isSubmitting}
-                        className="w-full lg:w-auto px-12 py-6 rounded-full bg-white text-black text-xs font-black uppercase tracking-[0.3em] shadow-xl shadow-white/5 disabled:opacity-50 transition-all mt-4 lg:mt-0"
+                        className="w-full lg:w-auto px-12 py-5 rounded-full bg-white text-black text-xs font-black uppercase tracking-[0.3em] shadow-xl shadow-white/5 disabled:opacity-50 transition-all mt-4 lg:mt-0"
                     >
                         {isSubmitting ? "TRANSMITTING..." : "ARCHIVE MOMENT"}
                     </motion.button>
                 </div>
             </form>
-
         </motion.div>
     );
 }

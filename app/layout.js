@@ -2,6 +2,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import AuthProvider from "@/components/AuthProvider";
 import Navbar from "@/components/Navbar";
+import { ToastProvider } from "@/components/ToastProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -16,6 +17,20 @@ export const metadata = {
     statusBarStyle: "black-translucent",
     title: "Our Universe",
   },
+  metadataBase: new URL(process.env.NEXTAUTH_URL || "https://localhost:3000"),
+  openGraph: {
+    title: "Our Universe — Couple Journal",
+    description: "A private digital sanctuary for your love story.",
+    type: "website",
+  },
+};
+
+export const viewport = {
+  themeColor: "#060614",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
 };
 
 export default function RootLayout({ children }) {
@@ -25,8 +40,10 @@ export default function RootLayout({ children }) {
         className={`${inter.className} bg-[#060614] text-white antialiased`}
       >
         <AuthProvider>
-          <Navbar />
-          <main style={{ position: 'relative', zIndex: 1, touchAction: 'pan-y' }}>{children}</main>
+          <ToastProvider>
+            <Navbar />
+            <main style={{ position: 'relative', zIndex: 1, touchAction: 'pan-y' }}>{children}</main>
+          </ToastProvider>
         </AuthProvider>
       </body>
     </html>

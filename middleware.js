@@ -6,7 +6,13 @@ export default withAuth({
     },
 });
 
-// Protect these routes — require authentication
+// Protect all app routes — require authentication
 export const config = {
-    matcher: ["/dashboard/:path*", "/memories/:path*", "/letters/:path*", "/journal/:path*"],
+    matcher: [
+        "/dashboard/:path*",
+        "/memories/:path*",
+        "/letters/:path*",
+        "/journal/:path*",
+        "/bucket-list/:path*",
+    ],
 };
