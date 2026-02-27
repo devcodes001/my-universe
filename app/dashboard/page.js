@@ -12,6 +12,7 @@ import LoveJar from "@/components/LoveJar";
 import OnThisDayWidget from "@/components/OnThisDayWidget";
 import DailyPromptWidget from "@/components/DailyPromptWidget";
 import LoveStreakWidget from "@/components/LoveStreakWidget";
+import QuestionOfTheDay from "@/components/QuestionOfTheDay";
 
 export default function DashboardPage() {
     const { data: session, status } = useSession();
@@ -197,6 +198,8 @@ export default function DashboardPage() {
                             { href: "/memories", icon: "💫", label: "Timeline" },
                             { href: "/journal", icon: "📓", label: "Moods" },
                             { href: "/letters", icon: "💌", label: "Archive" },
+                            { href: "/date-night", icon: "🎲", label: "Date" },
+                            { href: "/our-story", icon: "📊", label: "Stats" },
                         ].map((action, i) => (
                             <Link key={i} href={action.href} className="md:col-span-1 md:row-span-1">
                                 <motion.div
@@ -274,26 +277,27 @@ export default function DashboardPage() {
                     </motion.div>
                 </div>
 
-                {/* Love Streaks */}
+                {/* Love Streaks + Question of the Day */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                     <LoveStreakWidget />
+                    <QuestionOfTheDay />
+                </div>
+
+                {/* Prompts + On This Day */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                     {insights?.dailyPrompt && (
                         <DailyPromptWidget
                             prompt={insights.dailyPrompt}
                             onUsePrompt={() => router.push("/journal")}
                         />
                     )}
-                </div>
-
-                {/* Insights Row — On This Day */}
-                {insights?.onThisDay?.hasContent && (
-                    <div className="mb-12">
+                    {insights?.onThisDay?.hasContent && (
                         <OnThisDayWidget
                             memories={insights.onThisDay.memories}
                             journals={insights.onThisDay.journals}
                         />
-                    </div>
-                )}
+                    )}
+                </div>
             </div>
         </div>
     );
