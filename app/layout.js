@@ -16,12 +16,23 @@ export const metadata = {
     capable: true,
     statusBarStyle: "black-translucent",
     title: "Our Universe",
+    startupImage: [
+      "/icon.png",
+    ],
   },
-  metadataBase: new URL(process.env.NEXTAUTH_URL || "https://localhost:3000"),
+  icons: {
+    icon: '/icon.png',
+    shortcut: '/icon.png',
+    apple: '/icon.png',
+  },
+  metadataBase: new URL(process.env.NEXTAUTH_URL || "http://localhost:3000"),
   openGraph: {
     title: "Our Universe — Couple Journal",
     description: "A private digital sanctuary for your love story.",
     type: "website",
+  },
+  formatDetection: {
+    telephone: false,
   },
 };
 
